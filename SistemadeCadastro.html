@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistema de Cadastro e Login Fake</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root, [data-theme="light"] {
+      --font-body: 'Inter', system-ui, sans-serif;
+      --font-display: 'Inter', system-ui, sans-serif;
+      --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+      --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+      --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+      --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+      --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      --space-12: 3rem;
+      --radius-sm: 0.375rem;
+      --radius-md: 0.5rem;
+      --radius-lg: 0.75rem;
+      --radius-xl: 1rem;
+      --radius-full: 9999px;
+      --transition-interactive: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+      --color-bg: #f7f6f2;
+      --color-surface: #f9f8f5;
+      --color-surface-2: #fbfbf9;
+      --color-surface-offset: #f3f0ec;
+      --color-border: #d4d1ca;
+      --color-divider: #dcd9d5;
+      --color-text: #28251d;
+      --color-text-muted: #66635d;
+      --color-text-faint: #8d8a84;
+      --color-text-inverse: #f9f8f4;
+      --color-primary: #01696f;
+      --color-primary-hover: #0c4e54;
+      --color-primary-highlight: #d7ebea;
+      --color-error: #a12c7b;
+      --color-success: #2e6d38;
+      --shadow-sm: 0 1px 2px rgba(24, 23, 20, 0.08);
+      --shadow-md: 0 12px 32px rgba(24, 23, 20, 0.08);
+    }
+
+    [data-theme="dark"] {
+      --color-bg: #171614;
+      --color-surface: #1c1b19;
+      --color-surface-2: #201f1d;
+      --color-surface-offset: #242320;
+      --color-border: #393836;
+      --color-divider: #2a2927;
+      --color-text: #ece9e2;
+      --color-text-muted: #beb9b1;
+      --color-text-faint: #8e8a84;
+      --color-text-inverse: #1f1d1a;
+      --color-primary: #4f98a3;
+      --color-primary-hover: #68adb6;
+      --color-primary-highlight: rgba(79, 152, 163, 0.16);
+      --color-error: #eb83bd;
+      --color-success: #79bc78;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.22);
+      --shadow-md: 0 12px 32px rgba(0,0,0,0.32);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+    body {
+      min-height: 100vh;
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: 1.6;
+      color: var(--color-text);
+      background:
+        radial-gradient(circle at top left, var(--color-primary-highlight), transparent 28%),
+        var(--color-bg);
+    }
+
+    button, input, textarea { font: inherit; }
+    button { cursor: pointer; border: none; }
+
+    .page {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: var(--space-6);
+    }
+
+    .app-shell {
+      width: min(100%, 1040px);
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      background: var(--color-surface);
+      border: 1px solid rgba(40, 37, 29, 0.12);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+
+    .brand-panel {
+      padding: clamp(2rem, 4vw, 4rem);
+      background: linear-gradient(160deg, var(--color-surface-2), var(--color-surface-offset));
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-8);
+      border-right: 1px solid rgba(40, 37, 29, 0.08);
+    }
+
+    .logo-row, .top-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-3);
+      font-size: var(--text-sm);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .logo-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: var(--color-primary);
+      color: var(--color-text-inverse);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .theme-toggle {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: var(--color-surface);
+      color: var(--color-text);
+      border: 1px solid rgba(40, 37, 29, 0.1);
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      line-height: 1.05;
+      margin-bottom: var(--space-4);
+    }
+
+    .hero p {
+      color: var(--color-text-muted);
+      max-width: 34ch;
+    }
+
+    .feature-list {
+      display: grid;
+      gap: var(--space-4);
+    }
+
+    .feature-item {
+      padding: var(--space-4);
+      background: rgba(255,255,255,0.35);
+      border: 1px solid rgba(40, 37, 29, 0.08);
+      border-radius: var(--radius-xl);
+      backdrop-filter: blur(6px);
+    }
+
+    .feature-item strong {
+      display: block;
+      margin-bottom: var(--space-1);
+      font-size: var(--text-sm);
+    }
+
+    .feature-item span {
+      color: var(--color-text-muted);
+      font-size: var(--text-sm);
+    }
+
+    .form-panel {
+      padding: clamp(1.5rem, 3vw, 2.5rem);
+      background: var(--color-surface);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-5);
+    }
+
+    .tabs {
+      display: inline-grid;
+      grid-template-columns: repeat(2, 1fr);
+      background: var(--color-surface-offset);
+      padding: var(--space-1);
+      border-radius: var(--radius-full);
+      gap: var(--space-1);
+    }
+
+    .tab {
+      min-height: 44px;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-full);
+      background: transparent;
+      color: var(--color-text-muted);
+      font-size: var(--text-sm);
+      font-weight: 600;
+    }
+
+    .tab.active {
+      background: var(--color-primary);
+      color: var(--color-text-inverse);
+    }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    .panel-header h2 {
+      font-size: var(--text-lg);
+      margin-bottom: var(--space-2);
+    }
+
+    .panel-header p {
+      color: var(--color-text-muted);
+      font-size: var(--text-sm);
+    }
+
+    form {
+      display: grid;
+      gap: var(--space-4);
+      margin-top: var(--space-5);
+    }
+
+    .field-row {
+      display: grid;
+      gap: var(--space-4);
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .field {
+      display: grid;
+      gap: var(--space-2);
+    }
+
+    .field label {
+      font-size: var(--text-sm);
+      font-weight: 600;
+    }
+
+    .field input, .field textarea {
+      width: 100%;
+      min-height: 48px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      background: var(--color-surface-2);
+      color: var(--color-text);
+      padding: 0.9rem 1rem;
+      outline: none;
+    }
+
+    .field textarea {
+      min-height: 96px;
+      resize: vertical;
+    }
+
+    .field input:focus, .field textarea:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 4px var(--color-primary-highlight);
+    }
+
+    .error-text {
+      min-height: 1.1rem;
+      color: var(--color-error);
+      font-size: var(--text-xs);
+    }
+
+    .helper {
+      color: var(--color-text-faint);
+      font-size: var(--text-xs);
+    }
+
+    .actions {
+      display: flex;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+      margin-top: var(--space-2);
+    }
+
+    .btn {
+      min-height: 48px;
+      padding: 0.9rem 1.25rem;
+      border-radius: var(--radius-lg);
+      font-weight: 700;
+    }
+
+    .btn-primary {
+      background: var(--color-primary);
+      color: var(--color-text-inverse);
+    }
+
+    .btn-primary:hover { background: var(--color-primary-hover); }
+
+    .btn-secondary {
+      background: var(--color-surface-offset);
+      color: var(--color-text);
+      border: 1px solid rgba(40, 37, 29, 0.1);
+    }
+
+    .status {
+      display: none;
+      padding: 0.9rem 1rem;
+      border-radius: var(--radius-lg);
+      font-size: var(--text-sm);
+      font-weight: 600;
+    }
+
+    .status.show { display: block; }
+    .status.success { background: rgba(46, 109, 56, 0.12); color: var(--color-success); }
+    .status.error { background: rgba(161, 44, 123, 0.12); color: var(--color-error); }
+
+    .profile-card {
+      display: grid;
+      gap: var(--space-5);
+      margin-top: var(--space-5);
+      padding: var(--space-5);
+      border-radius: 20px;
+      background: var(--color-surface-2);
+      border: 1px solid rgba(40, 37, 29, 0.08);
+    }
+
+    .profile-top {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+    }
+
+    .avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 22px;
+      background: var(--color-primary);
+      color: var(--color-text-inverse);
+      display: grid;
+      place-items: center;
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+
+    .profile-grid {
+      display: grid;
+      gap: var(--space-4);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .profile-item {
+      padding: var(--space-4);
+      border-radius: var(--radius-lg);
+      background: var(--color-surface);
+      border: 1px solid rgba(40, 37, 29, 0.08);
+    }
+
+    .profile-item small {
+      display: block;
+      color: var(--color-text-faint);
+      margin-bottom: var(--space-1);
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .profile-item p {
+      font-size: var(--text-sm);
+      color: var(--color-text);
+      word-break: break-word;
+    }
+
+    .inline-link {
+      background: transparent;
+      color: var(--color-primary);
+      font-weight: 700;
+      padding: 0;
+    }
+
+    .footer-note {
+      color: var(--color-text-faint);
+      font-size: var(--text-xs);
+      text-align: center;
+      margin-top: auto;
+    }
+
+    @media (max-width: 860px) {
+      .app-shell { grid-template-columns: 1fr; }
+      .brand-panel { border-right: none; border-bottom: 1px solid rgba(40, 37, 29, 0.08); }
+    }
+
+    @media (max-width: 640px) {
+      .page { padding: var(--space-4); }
+      .field-row, .profile-grid { grid-template-columns: 1fr; }
+      .actions { flex-direction: column; }
+      .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="app-shell">
+      <aside class="brand-panel">
+        <div class="top-actions">
+          <div class="logo" aria-label="Logo AccessFlow">
+            <span class="logo-mark" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 12C5 8.13401 8.13401 5 12 5C15.866 5 19 8.13401 19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M8 12H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="12" cy="16.5" r="2.5" fill="currentColor"/>
+              </svg>
+            </span>
+            AccessFlow
+          </div>
+          <button class="theme-toggle" type="button" data-theme-toggle aria-label="Alternar tema">☾</button>
+        </div>
+
+        <div class="hero">
+          <h1>Projeto completo de cadastro, login e perfil fake.</h1>
+          <p>Perfeito para portfólio iniciante: valida formulário, simula autenticação, edita perfil e mostra regras de negócio no front-end.</p>
+        </div>
+
+        <div class="feature-list">
+          <article class="feature-item">
+            <strong>Cadastro com validação</strong>
+            <span>Nome, sobrenome, e-mail, senha forte, confirmação e biografia.</span>
+          </article>
+          <article class="feature-item">
+            <strong>Login fake funcional</strong>
+            <span>Usa os dados cadastrados em memória durante a sessão atual do navegador.</span>
+          </article>
+          <article class="feature-item">
+            <strong>Painel de perfil</strong>
+            <span>Exibe e atualiza dados do usuário para simular uma área autenticada.</span>
+          </article>
+        </div>
+      </aside>
+
+      <section class="form-panel">
+        <div class="tabs" aria-label="Alternar telas">
+          <button class="tab active" type="button" data-target="register-screen">Cadastro</button>
+          <button class="tab" type="button" data-target="login-screen">Login</button>
+        </div>
+
+        <div id="statusMessage" class="status" role="alert" aria-live="polite"></div>
+
+        <section id="register-screen" class="screen active" aria-labelledby="register-title">
+          <div class="panel-header">
+            <h2 id="register-title">Criar conta</h2>
+            <p>Preencha os campos abaixo para gerar um usuário fake e depois entrar no sistema.</p>
+          </div>
+
+          <form id="registerForm" novalidate>
+            <div class="field-row">
+              <div class="field">
+                <label for="firstName">Nome</label>
+                <input type="text" id="firstName" name="firstName" placeholder="Ex.: Mateus" />
+                <span class="error-text" data-error-for="firstName"></span>
+              </div>
+              <div class="field">
+                <label for="lastName">Sobrenome</label>
+                <input type="text" id="lastName" name="lastName" placeholder="Ex.: Silva" />
+                <span class="error-text" data-error-for="lastName"></span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="registerEmail">E-mail</label>
+              <input type="email" id="registerEmail" name="email" placeholder="seunome@email.com" />
+              <span class="error-text" data-error-for="email"></span>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label for="registerPassword">Senha</label>
+                <input type="password" id="registerPassword" name="password" placeholder="Mínimo 8 caracteres" />
+                <span class="error-text" data-error-for="password"></span>
+              </div>
+              <div class="field">
+                <label for="confirmPassword">Confirmar senha</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Repita a senha" />
+                <span class="error-text" data-error-for="confirmPassword"></span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="bio">Mini bio</label>
+              <textarea id="bio" name="bio" placeholder="Fale rapidamente sobre você, estudos ou objetivo profissional."></textarea>
+              <span class="error-text" data-error-for="bio"></span>
+              <span class="helper">Dica: esta parte enriquece o projeto e mostra edição de perfil.</span>
+            </div>
+
+            <div class="actions">
+              <button class="btn btn-primary" type="submit">Cadastrar usuário</button>
+              <button class="btn btn-secondary" type="reset">Limpar</button>
+            </div>
+          </form>
+        </section>
+
+        <section id="login-screen" class="screen" aria-labelledby="login-title">
+          <div class="panel-header">
+            <h2 id="login-title">Entrar</h2>
+            <p>Use o e-mail e a senha cadastrados no formulário anterior para acessar o perfil fake.</p>
+          </div>
+
+          <form id="loginForm" novalidate>
+            <div class="field">
+              <label for="loginEmail">E-mail</label>
+              <input type="email" id="loginEmail" name="loginEmail" placeholder="Digite seu e-mail" />
+              <span class="error-text" data-error-for="loginEmail"></span>
+            </div>
+
+            <div class="field">
+              <label for="loginPassword">Senha</label>
+              <input type="password" id="loginPassword" name="loginPassword" placeholder="Digite sua senha" />
+              <span class="error-text" data-error-for="loginPassword"></span>
+            </div>
+
+            <div class="actions">
+              <button class="btn btn-primary" type="submit">Entrar no sistema</button>
+              <button class="inline-link" type="button" id="goToRegister">Ainda não tem conta? Cadastre-se</button>
+            </div>
+          </form>
+        </section>
+
+        <section id="profile-screen" class="screen" aria-labelledby="profile-title">
+          <div class="panel-header">
+            <h2 id="profile-title">Perfil do usuário</h2>
+            <p>Área autenticada fake para mostrar fluxo de telas, exibição de dados e atualização de cadastro.</p>
+          </div>
+
+          <article class="profile-card">
+            <div class="profile-top">
+              <div class="avatar" id="avatarBox">US</div>
+              <div>
+                <h3 id="profileName">Usuário</h3>
+                <p id="profileEmail" class="helper">email@exemplo.com</p>
+              </div>
+            </div>
+
+            <div class="profile-grid">
+              <div class="profile-item">
+                <small>Nome completo</small>
+                <p id="profileFullName">-</p>
+              </div>
+              <div class="profile-item">
+                <small>Status</small>
+                <p>Conta fake ativa</p>
+              </div>
+              <div class="profile-item">
+                <small>E-mail</small>
+                <p id="profileEmailBox">-</p>
+              </div>
+              <div class="profile-item">
+                <small>Bio</small>
+                <p id="profileBio">-</p>
+              </div>
+            </div>
+          </article>
+
+          <form id="profileForm" novalidate>
+            <div class="field-row">
+              <div class="field">
+                <label for="editFirstName">Editar nome</label>
+                <input type="text" id="editFirstName" name="editFirstName" />
+                <span class="error-text" data-error-for="editFirstName"></span>
+              </div>
+              <div class="field">
+                <label for="editLastName">Editar sobrenome</label>
+                <input type="text" id="editLastName" name="editLastName" />
+                <span class="error-text" data-error-for="editLastName"></span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="editBio">Editar bio</label>
+              <textarea id="editBio" name="editBio"></textarea>
+              <span class="error-text" data-error-for="editBio"></span>
+            </div>
+
+            <div class="actions">
+              <button class="btn btn-primary" type="submit">Salvar alterações</button>
+              <button class="btn btn-secondary" type="button" id="logoutButton">Sair</button>
+            </div>
+          </form>
+        </section>
+
+        <p class="footer-note">Projeto front-end para portfólio. Não usa back-end nem banco de dados real.</p>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const html = document.documentElement;
+    const themeToggle = document.querySelector('[data-theme-toggle]');
+    let currentTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    html.setAttribute('data-theme', currentTheme);
+    themeToggle.textContent = currentTheme === 'dark' ? '☀' : '☾';
+
+    themeToggle.addEventListener('click', () => {
+      currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', currentTheme);
+      themeToggle.textContent = currentTheme === 'dark' ? '☀' : '☾';
+    });
+
+    const tabs = document.querySelectorAll('.tab');
+    const screens = document.querySelectorAll('.screen');
+    const statusMessage = document.getElementById('statusMessage');
+
+    const registerForm = document.getElementById('registerForm');
+    const loginForm = document.getElementById('loginForm');
+    const profileForm = document.getElementById('profileForm');
+    const goToRegister = document.getElementById('goToRegister');
+    const logoutButton = document.getElementById('logoutButton');
+
+    let fakeUser = null;
+    let loggedUser = null;
+
+    function showStatus(message, type = 'success') {
+      statusMessage.textContent = message;
+      statusMessage.className = `status show ${type}`;
+    }
+
+    function clearStatus() {
+      statusMessage.className = 'status';
+      statusMessage.textContent = '';
+    }
+
+    function showScreen(screenId) {
+      screens.forEach(screen => screen.classList.toggle('active', screen.id === screenId));
+      tabs.forEach(tab => tab.classList.toggle('active', tab.dataset.target === screenId));
+      clearStatus();
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        if (tab.dataset.target === 'profile-screen' && !loggedUser) {
+          showStatus('Faça login para acessar o perfil.', 'error');
+          return;
+        }
+        showScreen(tab.dataset.target);
+      });
+    });
+
+    goToRegister.addEventListener('click', () => showScreen('register-screen'));
+
+    function setFieldError(name, message) {
+      const el = document.querySelector(`[data-error-for="${name}"]`);
+      if (el) el.textContent = message;
+    }
+
+    function clearErrors(form) {
+      form.querySelectorAll('.error-text').forEach(item => item.textContent = '');
+    }
+
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function isStrongPassword(password) {
+      return /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/.test(password);
+    }
+
+    function validateRegister(data) {
+      const errors = {};
+
+      if (!data.firstName || data.firstName.trim().length < 2) {
+        errors.firstName = 'Digite um nome com pelo menos 2 caracteres.';
+      }
+      if (!data.lastName || data.lastName.trim().length < 2) {
+        errors.lastName = 'Digite um sobrenome com pelo menos 2 caracteres.';
+      }
+      if (!data.email || !isValidEmail(data.email)) {
+        errors.email = 'Informe um e-mail válido.';
+      }
+      if (!data.password || !isStrongPassword(data.password)) {
+        errors.password = 'A senha deve ter 8+ caracteres, maiúscula, minúscula e número.';
+      }
+      if (data.confirmPassword !== data.password) {
+        errors.confirmPassword = 'As senhas precisam ser iguais.';
+      }
+      if (!data.bio || data.bio.trim().length < 10) {
+        errors.bio = 'Escreva uma bio com pelo menos 10 caracteres.';
+      }
+
+      return errors;
+    }
+
+    function validateLogin(data) {
+      const errors = {};
+      if (!data.loginEmail || !isValidEmail(data.loginEmail)) {
+        errors.loginEmail = 'Digite um e-mail válido.';
+      }
+      if (!data.loginPassword) {
+        errors.loginPassword = 'Digite sua senha.';
+      }
+      return errors;
+    }
+
+    function validateProfile(data) {
+      const errors = {};
+      if (!data.editFirstName || data.editFirstName.trim().length < 2) {
+        errors.editFirstName = 'Nome inválido.';
+      }
+      if (!data.editLastName || data.editLastName.trim().length < 2) {
+        errors.editLastName = 'Sobrenome inválido.';
+      }
+      if (!data.editBio || data.editBio.trim().length < 10) {
+        errors.editBio = 'A bio precisa ter ao menos 10 caracteres.';
+      }
+      return errors;
+    }
+
+    function getInitials(firstName, lastName) {
+      return `${firstName?.[0] || ''}${lastName?.[0] || ''}`.toUpperCase();
+    }
+
+    function renderProfile() {
+      if (!loggedUser) return;
+
+      document.getElementById('avatarBox').textContent = getInitials(loggedUser.firstName, loggedUser.lastName);
+      document.getElementById('profileName').textContent = `${loggedUser.firstName} ${loggedUser.lastName}`;
+      document.getElementById('profileEmail').textContent = loggedUser.email;
+      document.getElementById('profileFullName').textContent = `${loggedUser.firstName} ${loggedUser.lastName}`;
+      document.getElementById('profileEmailBox').textContent = loggedUser.email;
+      document.getElementById('profileBio').textContent = loggedUser.bio;
+
+      document.getElementById('editFirstName').value = loggedUser.firstName;
+      document.getElementById('editLastName').value = loggedUser.lastName;
+      document.getElementById('editBio').value = loggedUser.bio;
+    }
+
+    registerForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      clearErrors(registerForm);
+      clearStatus();
+
+      const formData = Object.fromEntries(new FormData(registerForm).entries());
+      const errors = validateRegister(formData);
+
+      if (Object.keys(errors).length > 0) {
+        Object.entries(errors).forEach(([key, message]) => setFieldError(key, message));
+        showStatus('Corrija os campos destacados para continuar.', 'error');
+        return;
+      }
+
+      fakeUser = {
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        email: formData.email.trim().toLowerCase(),
+        password: formData.password,
+        bio: formData.bio.trim()
+      };
+
+      registerForm.reset();
+      document.getElementById('loginEmail').value = fakeUser.email;
+      showStatus('Cadastro realizado com sucesso. Agora faça login.', 'success');
+      showScreen('login-screen');
+    });
+
+    loginForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      clearErrors(loginForm);
+      clearStatus();
+
+      const formData = Object.fromEntries(new FormData(loginForm).entries());
+      const errors = validateLogin(formData);
+
+      if (Object.keys(errors).length > 0) {
+        Object.entries(errors).forEach(([key, message]) => setFieldError(key, message));
+        showStatus('Preencha o login corretamente.', 'error');
+        return;
+      }
+
+      if (!fakeUser) {
+        showStatus('Nenhum usuário cadastrado ainda. Crie uma conta primeiro.', 'error');
+        showScreen('register-screen');
+        return;
+      }
+
+      const email = formData.loginEmail.trim().toLowerCase();
+      const password = formData.loginPassword;
+
+      if (email !== fakeUser.email || password !== fakeUser.password) {
+        showStatus('E-mail ou senha incorretos.', 'error');
+        return;
+      }
+
+      loggedUser = { ...fakeUser };
+      renderProfile();
+      showScreen('profile-screen');
+      showStatus(`Bem-vindo, ${loggedUser.firstName}! Login realizado.`, 'success');
+    });
+
+    profileForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      clearErrors(profileForm);
+      clearStatus();
+
+      const formData = Object.fromEntries(new FormData(profileForm).entries());
+      const errors = validateProfile(formData);
+
+      if (Object.keys(errors).length > 0) {
+        Object.entries(errors).forEach(([key, message]) => setFieldError(key, message));
+        showStatus('Revise os dados do perfil.', 'error');
+        return;
+      }
+
+      loggedUser.firstName = formData.editFirstName.trim();
+      loggedUser.lastName = formData.editLastName.trim();
+      loggedUser.bio = formData.editBio.trim();
+      fakeUser = { ...loggedUser, password: fakeUser.password };
+      renderProfile();
+      showStatus('Perfil atualizado com sucesso.', 'success');
+    });
+
+    logoutButton.addEventListener('click', () => {
+      loggedUser = null;
+      loginForm.reset();
+      showScreen('login-screen');
+      showStatus('Sessão encerrada com sucesso.', 'success');
+    });
+  </script>
+</body>
+</html>
